@@ -4,77 +4,104 @@
 using namespace std;
 class Pet{
 private:
-    string type;
+    string type;    // 类型
+    int count;      // 时间
 public:
-    Pet(string t):type(t){};
-    virtual string getType(){
+    Pet(string t, int c):type(t),count(c){};
+    string getType(){
         return type;
+    }
+    int getCount(){
+        return count;
     }
 };
 class Cat:public Pet{
-    Cat(string t):Pet(t){};
+public:
+    Cat(int c):Pet("cat",c){};
 };  
 class Dog:public Pet{
-    Dog(string t):Pet(t){};
-}; 
-
-class PetQueueElement{
-private:
-    Pet p;
-    int count;
 public:
-    PetQueueElement(Pet pet,int cnt):p(pet),count(cnt){};
-    int getCount() { return count; }
-    Pet getPet() { return Pet; }
-
-}
+    Dog(int c):Pet("dog",c){};
+}; 
 
 class Queue{
 private:
-    queue<PetQueueElement> dogq;
-    queue<PetQueueElement> catq;
+    queue<Pet*> dogq;
+    queue<Pet*> catq;
     int count = 0;
 public:
     Queue(){}
-    void add(Pet p){
-        if(p.getType() == "dog"){
-            dogq.push(new PetQueueElement(p,count));
+    void add(string t){
+        if(t == "dog"){
+            dogq.push(new Dog(count));
         }else{
-            catq.push(new PetQueueElement(p,count));
+            catq.push(new Cat(count));
         }
+        count++;
     }
-    void isEmpty(){
-        return dogp.empty() && catq.empty();
+    bool isEmpty(){
+        return dogq.empty() && catq.empty();
     }
-    void isDogEmpty(){
-        return dogp.empty();
+    bool isDogEmpty(){
+        return dogq.empty();
     }
-    void isCatEmpty(){
-        return catp.empty();
+    bool isCatEmpty(){
+        return catq.empty();
     }
     void popCat(){
-        while(!catp.empty()){
-            PetQueueElement e = catp.front();
-            catp.pop();
-            cout<<e.getPet().getType()<<" ";
+        while(!catq.empty()){
+            Pet *p = catq.front();
+            cout<< p->getType()<<" ";
+            catq.pop();
         }
-        cout<<endl;
     }
     void popDog(){
         while(!dogq.empty()){
-            PetQueueElement e = dogq.front();
+            Pet *p = dogq.front();
+            cout<< p->getType()<<" ";
             dogq.pop();
-            cout<<e.getPet().getType()<<" ";
         }
-        cout<<endl;
     }
     void popAll(){
-        while(!dogp.empty()&&!catp.empty()){
-            PetQueueElement e1 = dogq.front();
-            PetQueueElement e2 = catp.front();
-            if(e1.getCount()<e2.getCount()){
-                
+        while(!dogq.empty()&&!catq.empty()){
+            Pet *p1 = dogq.front();
+            Pet *p2 = catq.front();
+            if(p1->getCount()<p2->getCount()){
+                cout<<p1->getType()<<" ";
+                dogq.pop();
+            }else{
+                cout<<p2->getType()<<" ";
+                catq.pop();
             }
         }
+        popCat();
+        popDog();
+        cout<<endl;
     }
+};
+
+void test(){
+    Queue petq;
+    petq.add("dog");
+    petq.add("dog");
+    cout<<petq.isCatEmpty() <<" "<< petq.isDogEmpty()<<endl;
+    petq.add("cat");
+    petq.add("cat");
+    petq.add("dog");
+    petq.add("dog");
+    petq.add("dog");
+    petq.add("dog");
+    petq.add("cat");
+    cout<<petq.isCatEmpty() <<" "<< petq.isDogEmpty()<<endl;
+    petq.popAll();
+    petq.add("cat");
+    petq.add("dog");
+    petq.add("dog");
+    petq.add("dog");
+    petq.popDog();
+    cout<<endl;
+}
+
+int main(){
+    test();
 }

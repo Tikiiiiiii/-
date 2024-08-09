@@ -9,4 +9,4 @@ public:
         static std::shared_ptr<T> instance = std::make_shared<T>();
         return instance;
     }
-}
+};
